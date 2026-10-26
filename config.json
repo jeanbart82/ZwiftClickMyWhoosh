@@ -18,14 +18,14 @@
 
     "left": {"key": "a", "hold": true},
     "right": {"key": "d", "hold": true},
-    "up": "",
-    "down": "",
+    "up": "up",
+    "down": "down",
 
     "onoff_left": "h",
     "onoff_right": "h",
 
-    "a": "",
-    "b": "",
+    "a": "enter",
+    "b": "escape",
     "y": "",
     "z": ""
   },

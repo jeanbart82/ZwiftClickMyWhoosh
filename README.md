@@ -52,7 +52,7 @@ Je hebt bij beide manieren **geen beheerdersrechten** nodig.
 
 ### Instellen (`config.json`)
 - `language`: `"nl"` (Nederlands, standaard) of `"en"` (Engels) voor de meldingen van het programma.
-- `buttons`: welke knop welke toets geeft. De standaard komt overeen met die van [BikeControl](https://github.com/OpenBikeControl/bikecontrol) voor MyWhoosh:
+- `buttons`: welke knop welke toets geeft. De standaard:
 
   | Knop | Toets | In MyWhoosh |
   |---|---|---|
@@ -60,7 +60,9 @@ Je hebt bij beide manieren **geen beheerdersrechten** nodig.
   | Click `minus`, alles aan de linkerkant (`shift_up_left`, `shift_down_left`, `paddle_left`, `side_left`, `powerup_left`) | `I` | Lichter schakelen |
   | `left` / `right` (richtingskruis) | `A` / `D`, vastgehouden | Sturen |
   | `onoff_left` / `onoff_right` | `H` | Interface verbergen/tonen |
-  | `up`, `down`, `a`, `b`, `y`, `z` | – | Niet gekoppeld |
+  | `up` / `down` (richtingskruis) | pijltje omhoog / omlaag | Door menu's bladeren |
+  | `a` / `b` | `Enter` / `Escape` | Bevestigen / terug |
+  | `y`, `z` | – | Niet gekoppeld |
 
   - Een toets die ingedrukt blijft zolang je de knop vasthoudt, schrijf je zo: `"left": {"key": "a", "hold": true}`. Zonder `hold` wordt het één tik.
   - MyWhoosh heeft ook emotes onder de toetsen `1` tot en met `7`. Je kunt ze aan een vrije knop koppelen, bijv. `"y": "1"`.
@@ -96,7 +98,7 @@ Op een laptop van je werk kan het IT-beleid scripts, Bluetooth-apparaten of onbe
 | MyWhoosh reageert nog steeds niet | Draait MyWhoosh als administrator? Dan blokkeert Windows de toetsaanslagen. Start MyWhoosh normaal, of start dit programma ook als administrator. |
 | Knop doet iets anders dan verwacht | Kijk welke knopnaam het programma toont en pas `buttons` in `config.json` aan. |
 | Click v2 werkt niet | Een Click v2 moet soms eerst een keer met de Zwift-app verbonden zijn geweest. Sluit Zwift daarna weer af. |
-| Zwift Ride werkt niet | Firmware nieuwer dan 1.2.0 is door Zwift afgeschermd en werkt niet met andere programma's (volgens BikeControl). |
+| Zwift Ride werkt niet | Firmware nieuwer dan 1.2.0 is door Zwift afgeschermd en werkt niet met andere programma's. |
 | Python niet gevonden (`start.bat`) | Installeer Python opnieuw en vink "Add python.exe to PATH" aan. Of gebruik de `.exe`. |
 
 ### Zelf de .exe bouwen
@@ -155,7 +157,7 @@ Neither option needs **administrator rights**.
 
 ### Configuration (`config.json`)
 - `language`: `"nl"` (Dutch, default) or `"en"` (English) for the program's messages.
-- `buttons`: which button sends which key. The defaults match [BikeControl](https://github.com/OpenBikeControl/bikecontrol)'s for MyWhoosh:
+- `buttons`: which button sends which key. The defaults:
 
   | Button | Key | In MyWhoosh |
   |---|---|---|
@@ -163,7 +165,9 @@ Neither option needs **administrator rights**.
   | Click `minus`, everything on the left (`shift_up_left`, `shift_down_left`, `paddle_left`, `side_left`, `powerup_left`) | `I` | Shift easier |
   | `left` / `right` (D-pad) | `A` / `D`, held | Steering |
   | `onoff_left` / `onoff_right` | `H` | Hide/show UI |
-  | `up`, `down`, `a`, `b`, `y`, `z` | – | Not mapped |
+  | `up` / `down` (D-pad) | arrow up / down | Navigate menus |
+  | `a` / `b` | `Enter` / `Escape` | Confirm / back |
+  | `y`, `z` | – | Not mapped |
 
   - For a key that stays pressed while you hold the button, write: `"left": {"key": "a", "hold": true}`. Without `hold` it's a single tap.
   - MyWhoosh also has emotes on keys `1` to `7`. You can map them to a free button, e.g. `"y": "1"`.
@@ -199,7 +203,7 @@ On a work laptop, IT policy may block scripts, Bluetooth devices or unknown prog
 | MyWhoosh still doesn't respond | Is MyWhoosh running as administrator? Then Windows blocks the keystrokes. Start MyWhoosh normally, or run this program as administrator too. |
 | A button does something unexpected | Look at the button name the program shows and adjust `buttons` in `config.json`. |
 | Click v2 doesn't work | A Click v2 sometimes needs to have been connected to the Zwift app once first. Close Zwift again afterwards. |
-| Zwift Ride doesn't work | Firmware newer than 1.2.0 is locked by Zwift and doesn't work with third-party programs (according to BikeControl). |
+| Zwift Ride doesn't work | Firmware newer than 1.2.0 is locked by Zwift and doesn't work with third-party programs. |
 | Python not found (`start.bat`) | Reinstall Python and tick "Add python.exe to PATH". Or use the `.exe`. |
 
 ### Building the .exe yourself

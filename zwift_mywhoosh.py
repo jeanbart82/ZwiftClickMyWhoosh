@@ -115,15 +115,21 @@ RIDE_BUTTONS = {
     0x00010: "a",
     0x00020: "b",
     0x00040: "y",
-    0x00100: "z",
-    0x00200: "shift_up_left",
-    0x00400: "shift_down_left",
-    0x00800: "powerup_left",
-    0x01000: "onoff_left",
-    0x02000: "shift_up_right",
-    0x04000: "shift_down_right",
-    0x10000: "powerup_right",
-    0x20000: "onoff_right",
+    0x00080: "z",
+    0x00100: "shift_up_left",
+    0x00200: "shift_down_left",
+    0x00400: "powerup_left",
+    0x00800: "onoff_left",
+    0x01000: "shift_up_right",
+    0x02000: "shift_down_right",
+    0x04000: "powerup_right",
+    0x08000: "onoff_right",
+}
+
+# De twee helften van de Click v2 geven ook elkaars knoppen door: per helft alleen de eigen knoppen tellen
+DEVICE_BUTTONS = {
+    0x0A: {"a", "b", "y", "z", "shift_up_right"},
+    0x0B: {"up", "down", "left", "right", "shift_up_left"},
 }
 
 # Zwift Ride / Click v2: analoge peddels (veld 3), locatie 0 = links, 1 = rechts
@@ -351,21 +357,22 @@ class Bridge:
                 _send_key(self.mapping[button][1], up=True)
 
 
-def identify(device, adv) -> str | None:
-    """Geeft een naam terug als dit een Zwift-controller is (geen trainer)."""
+def identify(device, adv) -> tuple[str, set[str] | None] | None:
+    """Geeft (naam, toegestane knoppen of None voor alle) als dit een Zwift-controller is (geen trainer)."""
     name = (adv.local_name or device.name or "").strip()
     if any(x in name.lower() for x in ("hub", "kickr", "trainer")):
         return None
     mfr = adv.manufacturer_data.get(ZWIFT_MANUFACTURER_ID)
     if mfr and mfr[0] in DEVICE_TYPES:
         device_name, side = DEVICE_TYPES[mfr[0]]
-        return f"{device_name} ({t(side)})" if side else device_name
+        label = f"{device_name} ({t(side)})" if side else device_name
+        return label, DEVICE_BUTTONS.get(mfr[0])
     if name.lower().startswith("zwift") and any(x in name.lower() for x in ("click", "play", "ride")):
-        return name
+        return name, None
     return None
 
 
-async def find_controllers(timeout: float, debug: bool) -> list[tuple[object, str]]:
+async def find_controllers(timeout: float, debug: bool) -> list[tuple[object, str, set[str] | None]]:
     print(t("scanning", timeout=timeout))
     found = await BleakScanner.discover(timeout=timeout, return_adv=True)
     controllers = []
@@ -374,16 +381,18 @@ async def find_controllers(timeout: float, debug: bool) -> list[tuple[object, st
                       or SERVICE_UUIDS & {u.lower() for u in adv.service_uuids}):
             mfr = adv.manufacturer_data.get(ZWIFT_MANUFACTURER_ID, b"")
             print(t("debug_device", name=adv.local_name or device.name, address=device.address, mfr=mfr.hex()))
-        label = identify(device, adv)
-        if label:
-            controllers.append((device, label))
+        identified = identify(device, adv)
+        if identified:
+            label, allowed = identified
+            controllers.append((device, label, allowed))
             print(t("found", label=label, address=device.address))
     return controllers
 
 
-async def run_controller(device, label: str, bridge: Bridge) -> None:
+async def run_controller(device, label: str, allowed: set[str] | None, bridge: Bridge) -> None:
     address = device.address
     target = device
+    battery = None
     while True:
         disconnected = asyncio.Event()
         pressed: set[str] = set()
@@ -392,14 +401,19 @@ async def run_controller(device, label: str, bridge: Bridge) -> None:
                 print(t("connected", label=label))
 
                 async def on_async(_, data: bytearray):
-                    nonlocal pressed
+                    nonlocal pressed, battery
                     data = bytes(data)
                     if bridge.debug:
                         print(f"[{label}] [debug] async {data.hex()}")
-                    if data and data[0] == MSG_BATTERY and len(data) > 2:
-                        print(t("battery", label=label, level=parse_protobuf(data[1:]).get(1, "?")))
+                    if data and data[0] == MSG_BATTERY:
+                        level = parse_protobuf(data[1:]).get(2)
+                        if level is not None and level != battery:
+                            battery = level
+                            print(t("battery", label=label, level=level))
                     new = decode_buttons(data)
                     if new is not None:
+                        if allowed is not None:
+                            new &= allowed
                         previous, pressed = pressed, new
                         await bridge.on_buttons(label, previous, new)
 
@@ -449,7 +463,7 @@ async def main() -> None:
             print(t("none_found"))
 
     print(t("ready"))
-    await asyncio.gather(*(run_controller(dev, label, bridge) for dev, label in controllers))
+    await asyncio.gather(*(run_controller(dev, label, allowed, bridge) for dev, label, allowed in controllers))
 
 
 if __name__ == "__main__":
