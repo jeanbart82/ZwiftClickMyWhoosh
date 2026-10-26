@@ -65,7 +65,8 @@ Download de nieuwe zip en vervang **zowel `ZwiftClickMyWhoosh.exe` als `config.j
   | `onoff_left` / `onoff_right` | `H` | Interface verbergen/tonen |
   | `up` / `down` (richtingskruis) | pijltje omhoog / omlaag | Door menu's bladeren |
   | `a` / `b` | `Enter` / `Escape` | Bevestigen / terug |
-  | `y`, `z` | – | Niet gekoppeld |
+  | `y` | `H` | Interface verbergen/tonen |
+  | `z` | `7` | Emote (duim omhoog) |
 
   `Enter` en `Escape` voor de menu's zijn nog niet getest in MyWhoosh. Werken ze niet, kijk dan in MyWhoosh welke toetsen het menu bedienen.
 
@@ -80,8 +81,8 @@ Download de nieuwe zip en vervang **zowel `ZwiftClickMyWhoosh.exe` als `config.j
   | Zwift Ride | als de Play, plus `shift_up_left`, `shift_down_left`, `shift_up_right`, `shift_down_right`, `powerup_left`, `powerup_right` |
 
   - Een toets die ingedrukt blijft zolang je de knop vasthoudt, schrijf je zo: `"left": {"key": "a", "hold": true}`. Zonder `hold` wordt het één tik.
-  - MyWhoosh heeft ook emotes onder de toetsen `1` tot en met `7`. Je kunt ze aan een vrije knop koppelen, bijv. `"z": "7"`.
-  - De Click v2 heeft geen aan/uit-knop. Wil je de interface kunnen verbergen, koppel dan `H` aan een vrije knop: `"y": "h"`.
+  - MyWhoosh heeft ook emotes onder de toetsen `1` tot en met `7`. Standaard staat `7` op Z; je kunt de andere aan een vrije knop koppelen.
+  - De Click v2 heeft geen aan/uit-knop; daarom staat `H` (interface) ook op Y.
   - Druk je op een knop die nog niet gekoppeld is, dan toont het programma de naam van die knop. Zet die naam in `buttons` met de gewenste toets.
   - Mogelijke toetsen: letters, cijfers, `space`, `enter`, `escape`, `tab`, `backspace`, `up`, `down`, `left`, `right`, `pageup`, `pagedown`, `home`, `end`, `insert`, `delete`, `f1`–`f12`, `minus`, `plus`, `comma`, `period`. Een lege waarde (`""`) betekent: niet gekoppeld.
 - `focus_window_title`: zet hier bijv. `"MyWhoosh"` in. Het programma haalt dan het MyWhoosh-venster naar voren voor elke toetsaanslag.
@@ -187,7 +188,8 @@ Download the new zip and replace **both `ZwiftClickMyWhoosh.exe` and `config.jso
   | `onoff_left` / `onoff_right` | `H` | Hide/show UI |
   | `up` / `down` (D-pad) | arrow up / down | Navigate menus |
   | `a` / `b` | `Enter` / `Escape` | Confirm / back |
-  | `y`, `z` | – | Not mapped |
+  | `y` | `H` | Hide/show UI |
+  | `z` | `7` | Emote (thumbs up) |
 
   `Enter` and `Escape` for the menus haven't been tested in MyWhoosh yet. If they don't work, check which keys MyWhoosh uses for its menus.
 
@@ -202,8 +204,8 @@ Download the new zip and replace **both `ZwiftClickMyWhoosh.exe` and `config.jso
   | Zwift Ride | same as the Play, plus `shift_up_left`, `shift_down_left`, `shift_up_right`, `shift_down_right`, `powerup_left`, `powerup_right` |
 
   - For a key that stays pressed while you hold the button, write: `"left": {"key": "a", "hold": true}`. Without `hold` it's a single tap.
-  - MyWhoosh also has emotes on keys `1` to `7`. You can map them to a free button, e.g. `"z": "7"`.
-  - The Click v2 has no on/off button. To be able to hide the UI, map `H` to a free button: `"y": "h"`.
+  - MyWhoosh also has emotes on keys `1` to `7`. By default `7` is on Z; you can map the others to a free button.
+  - The Click v2 has no on/off button, which is why `H` (UI) is also on Y.
   - When you press a button that isn't mapped yet, the program shows its name. Add that name to `buttons` with the key you want.
   - Available keys: letters, digits, `space`, `enter`, `escape`, `tab`, `backspace`, `up`, `down`, `left`, `right`, `pageup`, `pagedown`, `home`, `end`, `insert`, `delete`, `f1`–`f12`, `minus`, `plus`, `comma`, `period`. An empty value (`""`) means: not mapped.
 - `focus_window_title`: set this to e.g. `"MyWhoosh"` and the program brings the MyWhoosh window to the front before every keystroke.
