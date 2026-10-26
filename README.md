@@ -51,6 +51,7 @@ Je hebt bij beide manieren **geen beheerdersrechten** nodig.
 5. **Stoppen**: druk op Ctrl+C in het programmavenster, of sluit het venster.
 
 ### Instellen (`config.json`)
+- `language`: `"nl"` (Nederlands, standaard) of `"en"` (Engels) voor de meldingen van het programma.
 - `buttons`: welke knop welke toets geeft. Standaard is `plus` = `i` (zwaarder) en `minus` = `k` (lichter).
   - Druk je op een knop die nog niet gekoppeld is, dan toont het programma de naam van die knop. Zet die naam in `buttons` met de gewenste toets.
   - Mogelijke toetsen: letters, cijfers, `space`, `enter`, `up`, `down`, `left`, `right`, `pageup`, `pagedown`, `f1`–`f12`, `minus`, `plus`, `comma`, `period`.
@@ -99,9 +100,7 @@ The program connects to the Click over Bluetooth and turns every button press in
 
 The Zwift Cog has no electronics and doesn't need this program: just pair your trainer (e.g. Zwift Hub) in MyWhoosh as usual.
 
-> The program's own messages are in Dutch. The ones you'll see most:
-> `Zoeken naar Zwift-controllers` = searching for controllers, `Gevonden` = found, `verbonden` = connected,
-> `Geen controller gevonden` = no controller found, `toets` = key, `verbinding verbroken` = disconnected.
+> The program shows its messages in Dutch by default. For English, set `"language": "en"` in `config.json`.
 
 ### Requirements
 - Windows 10 or 11 with Bluetooth
@@ -139,10 +138,11 @@ Neither option needs **administrator rights**.
    - Wait until you see **"handshake OK"**.
 4. **Ride**
    - Click in the MyWhoosh window so it's active. Keystrokes always go to the active window.
-   - When you press + or −, the program window shows something like `plus -> toets 'i'`.
+   - When you press + or −, the program window shows something like `plus -> key 'i'`.
 5. **Stop**: press Ctrl+C in the program window, or close the window.
 
 ### Configuration (`config.json`)
+- `language`: `"nl"` (Dutch, default) or `"en"` (English) for the program's messages.
 - `buttons`: which button sends which key. By default `plus` = `i` (harder) and `minus` = `k` (easier).
   - When you press a button that isn't mapped yet, the program shows its name. Add that name to `buttons` with the key you want.
   - Available keys: letters, digits, `space`, `enter`, `up`, `down`, `left`, `right`, `pageup`, `pagedown`, `f1`–`f12`, `minus`, `plus`, `comma`, `period`.
@@ -171,8 +171,8 @@ On a work laptop, IT policy may block scripts, Bluetooth devices or unknown prog
 ### Troubleshooting
 | Problem | Solution |
 |---|---|
-| "Geen controller gevonden" (no controller found) | Press a button on the Click. Check step 1 under Usage: Zwift and Companion closed, Click not paired in Windows. Is Bluetooth on? |
-| The window shows `plus -> toets 'i'`, but MyWhoosh doesn't respond | Click in the MyWhoosh window first, or set `focus_window_title` to `"MyWhoosh"`. Check that the keys match MyWhoosh's settings. |
+| "No controller found" | Press a button on the Click. Check step 1 under Usage: Zwift and Companion closed, Click not paired in Windows. Is Bluetooth on? |
+| The window shows `plus -> key 'i'`, but MyWhoosh doesn't respond | Click in the MyWhoosh window first, or set `focus_window_title` to `"MyWhoosh"`. Check that the keys match MyWhoosh's settings. |
 | MyWhoosh still doesn't respond | Is MyWhoosh running as administrator? Then Windows blocks the keystrokes. Start MyWhoosh normally, or run this program as administrator too. |
 | A button does something unexpected | Look at the button name the program shows and adjust `buttons` in `config.json`. |
 | Click v2 doesn't work | A Click v2 sometimes needs to have been connected to the Zwift app once first. Close Zwift again afterwards. |

@@ -19,6 +19,64 @@ from pathlib import Path
 from bleak import BleakClient, BleakScanner
 
 # ---------------------------------------------------------------------------
+# Meldingen (config.json: "language": "nl" of "en")
+# ---------------------------------------------------------------------------
+
+MESSAGES = {
+    "nl": {
+        "left": "links",
+        "right": "rechts",
+        "unknown_key": "Onbekende toets in config: '{key}'",
+        "unmapped": "[{name}] knop '{button}' ingedrukt (niet gekoppeld in config.json)",
+        "pressed": "[{name}] {button} -> toets '{key}'",
+        "scanning": "Zoeken naar Zwift-controllers ({timeout:.0f} s)... druk een knop op je Click om hem wakker te maken.",
+        "debug_device": "  [debug] Zwift-apparaat: {name} {address} mfr={mfr}",
+        "found": "  Gevonden: {label} ({address})",
+        "connected": "[{label}] verbonden",
+        "battery": "[{label}] batterij: {level}%",
+        "handshake": "[{label}] handshake OK - klaar om te schakelen!",
+        "disconnected": "[{label}] verbinding verbroken",
+        "connect_error": "[{label}] verbindingsfout: {error}",
+        "reconnecting": "[{label}] opnieuw verbinden...",
+        "none_found": "Geen controller gevonden. Tips: druk op een knop van de Click, zorg dat hij niet\n"
+                      "met Zwift/Companion verbonden is en niet gekoppeld is in Windows Bluetooth-instellingen.\n"
+                      "Opnieuw zoeken...\n",
+        "ready": "\nOpen MyWhoosh en zorg dat het venster actief is. Stoppen met Ctrl+C.\n",
+        "stopped": "Gestopt.",
+        "error": "\nFout: {error}",
+        "press_enter": "Druk op Enter om af te sluiten...",
+    },
+    "en": {
+        "left": "left",
+        "right": "right",
+        "unknown_key": "Unknown key in config: '{key}'",
+        "unmapped": "[{name}] button '{button}' pressed (not mapped in config.json)",
+        "pressed": "[{name}] {button} -> key '{key}'",
+        "scanning": "Searching for Zwift controllers ({timeout:.0f} s)... press a button on your Click to wake it up.",
+        "debug_device": "  [debug] Zwift device: {name} {address} mfr={mfr}",
+        "found": "  Found: {label} ({address})",
+        "connected": "[{label}] connected",
+        "battery": "[{label}] battery: {level}%",
+        "handshake": "[{label}] handshake OK - ready to shift!",
+        "disconnected": "[{label}] disconnected",
+        "connect_error": "[{label}] connection error: {error}",
+        "reconnecting": "[{label}] reconnecting...",
+        "none_found": "No controller found. Tips: press a button on the Click, make sure it isn't\n"
+                      "connected to Zwift/Companion and isn't paired in Windows Bluetooth settings.\n"
+                      "Searching again...\n",
+        "ready": "\nOpen MyWhoosh and make sure its window is active. Stop with Ctrl+C.\n",
+        "stopped": "Stopped.",
+        "error": "\nError: {error}",
+        "press_enter": "Press Enter to exit...",
+    },
+}
+language = "nl"
+
+
+def t(message_id: str, /, **kwargs) -> str:
+    return MESSAGES[language][message_id].format(**kwargs)
+
+# ---------------------------------------------------------------------------
 # Zwift BLE-protocol
 # ---------------------------------------------------------------------------
 
@@ -32,15 +90,15 @@ SYNC_RX_CHAR = "00000003-19ca-4651-86e5-fa29dcdd09d1"  # write: handshake
 SYNC_TX_CHAR = "00000004-19ca-4651-86e5-fa29dcdd09d1"  # indicate: antwoorden
 RIDE_ON = b"RideOn"
 
-# Eerste byte van de manufacturer data = apparaattype
+# Eerste byte van de manufacturer data = apparaattype: (naam, kant)
 DEVICE_TYPES = {
-    0x02: "Zwift Play (rechts)",
-    0x03: "Zwift Play (links)",
-    0x07: "Zwift Ride (rechts)",
-    0x08: "Zwift Ride (links)",
-    0x09: "Zwift Click",
-    0x0A: "Zwift Click v2 (rechts)",
-    0x0B: "Zwift Click v2 (links)",
+    0x02: ("Zwift Play", "right"),
+    0x03: ("Zwift Play", "left"),
+    0x07: ("Zwift Ride", "right"),
+    0x08: ("Zwift Ride", "left"),
+    0x09: ("Zwift Click", None),
+    0x0A: ("Zwift Click v2", "right"),
+    0x0B: ("Zwift Click v2", "left"),
 }
 
 MSG_PLAY = 0x07
@@ -188,7 +246,7 @@ def key_to_vk(key: str) -> int:
         return SPECIAL_KEYS[key]
     if len(key) == 1 and key.isalnum():
         return ord(key.upper())
-    raise ValueError(f"Onbekende toets in config: '{key}'")
+    raise ValueError(t("unknown_key", key=key))
 
 
 def _send_key(vk: int, up: bool) -> None:
@@ -242,9 +300,9 @@ class Bridge:
         for button in sorted(pressed - previous):
             vk = self.mapping.get(button)
             if vk is None:
-                print(f"[{name}] knop '{button}' ingedrukt (niet gekoppeld in config.json)")
+                print(t("unmapped", name=name, button=button))
                 continue
-            print(f"[{name}] {button} -> toets '{self.key_names[button]}'")
+            print(t("pressed", name=name, button=button, key=self.key_names[button]))
             if self.focus_title:
                 focus_window(self.focus_title)
             await tap_key(vk, self.hold_ms)
@@ -257,25 +315,26 @@ def identify(device, adv) -> str | None:
         return None
     mfr = adv.manufacturer_data.get(ZWIFT_MANUFACTURER_ID)
     if mfr and mfr[0] in DEVICE_TYPES:
-        return DEVICE_TYPES[mfr[0]]
+        device_name, side = DEVICE_TYPES[mfr[0]]
+        return f"{device_name} ({t(side)})" if side else device_name
     if name.lower().startswith("zwift") and any(x in name.lower() for x in ("click", "play", "ride")):
         return name
     return None
 
 
 async def find_controllers(timeout: float, debug: bool) -> list[tuple[object, str]]:
-    print(f"Zoeken naar Zwift-controllers ({timeout:.0f} s)... druk een knop op je Click om hem wakker te maken.")
+    print(t("scanning", timeout=timeout))
     found = await BleakScanner.discover(timeout=timeout, return_adv=True)
     controllers = []
     for device, adv in found.values():
         if debug and (ZWIFT_MANUFACTURER_ID in adv.manufacturer_data
                       or SERVICE_UUIDS & {u.lower() for u in adv.service_uuids}):
             mfr = adv.manufacturer_data.get(ZWIFT_MANUFACTURER_ID, b"")
-            print(f"  [debug] Zwift-apparaat: {adv.local_name or device.name} {device.address} mfr={mfr.hex()}")
+            print(t("debug_device", name=adv.local_name or device.name, address=device.address, mfr=mfr.hex()))
         label = identify(device, adv)
         if label:
             controllers.append((device, label))
-            print(f"  Gevonden: {label} ({device.address})")
+            print(t("found", label=label, address=device.address))
     return controllers
 
 
@@ -287,7 +346,7 @@ async def run_controller(device, label: str, bridge: Bridge) -> None:
         pressed: set[str] = set()
         try:
             async with BleakClient(target, disconnected_callback=lambda _: disconnected.set()) as client:
-                print(f"[{label}] verbonden")
+                print(t("connected", label=label))
 
                 async def on_async(_, data: bytearray):
                     nonlocal pressed
@@ -295,7 +354,7 @@ async def run_controller(device, label: str, bridge: Bridge) -> None:
                     if bridge.debug:
                         print(f"[{label}] [debug] async {data.hex()}")
                     if data and data[0] == MSG_BATTERY and len(data) > 2:
-                        print(f"[{label}] batterij: {parse_protobuf(data[1:]).get(1, '?')}%")
+                        print(t("battery", label=label, level=parse_protobuf(data[1:]).get(1, "?")))
                     new = decode_buttons(data)
                     if new is not None:
                         previous, pressed = pressed, new
@@ -304,7 +363,7 @@ async def run_controller(device, label: str, bridge: Bridge) -> None:
                 def on_sync_tx(_, data: bytearray):
                     data = bytes(data)
                     if data.startswith(RIDE_ON):
-                        print(f"[{label}] handshake OK - klaar om te schakelen!")
+                        print(t("handshake", label=label))
                     elif bridge.debug:
                         print(f"[{label}] [debug] sync {data.hex()}")
 
@@ -314,12 +373,12 @@ async def run_controller(device, label: str, bridge: Bridge) -> None:
                 await client.write_gatt_char(rx, RIDE_ON, response="write" in rx.properties)
 
                 await disconnected.wait()
-                print(f"[{label}] verbinding verbroken")
+                print(t("disconnected", label=label))
         except Exception as e:  # noqa: BLE001 - BLE-fouten zijn divers, gewoon opnieuw proberen
-            print(f"[{label}] verbindingsfout: {e}")
+            print(t("connect_error", label=label, error=e))
 
         await asyncio.sleep(3)
-        print(f"[{label}] opnieuw verbinden...")
+        print(t("reconnecting", label=label))
         target = await BleakScanner.find_device_by_address(address, timeout=10) or address
 
 
@@ -330,8 +389,11 @@ def load_config() -> dict:
 
 
 async def main() -> None:
+    global language
     debug = "--debug" in sys.argv
     config = load_config()
+    if config.get("language") in MESSAGES:
+        language = config["language"]
     debug = debug or bool(config.get("debug"))
     bridge = Bridge(config, debug)
 
@@ -339,11 +401,9 @@ async def main() -> None:
     while not controllers:
         controllers = await find_controllers(float(config.get("scan_seconds", 8)), debug)
         if not controllers:
-            print("Geen controller gevonden. Tips: druk op een knop van de Click, zorg dat hij niet\n"
-                  "met Zwift/Companion verbonden is en niet gekoppeld is in Windows Bluetooth-instellingen.\n"
-                  "Opnieuw zoeken...\n")
+            print(t("none_found"))
 
-    print("\nOpen MyWhoosh en zorg dat het venster actief is. Stoppen met Ctrl+C.\n")
+    print(t("ready"))
     await asyncio.gather(*(run_controller(dev, label, bridge) for dev, label in controllers))
 
 
@@ -352,10 +412,10 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("Gestopt.")
+        print(t("stopped"))
         time.sleep(0.2)
     except Exception as e:  # noqa: BLE001
-        print(f"\nFout: {e}")
+        print(t("error", error=e))
         if getattr(sys, "frozen", False):  # .exe: venster openhouden zodat de fout leesbaar is
-            input("Druk op Enter om af te sluiten...")
+            input(t("press_enter"))
         raise
