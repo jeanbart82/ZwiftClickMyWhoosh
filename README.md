@@ -1,33 +1,39 @@
 # Zwift Click → MyWhoosh
 
+**[Nederlands](#nederlands)** | **[English](#english)**
+
+---
+
+## Nederlands
+
 Gebruik je Zwift Click (ook Zwift Play, Zwift Ride of Click v2) om virtueel te schakelen in MyWhoosh op een Windows-pc.
 Het programma maakt via Bluetooth verbinding met de Click en zet elke knopdruk om in een toetsaanslag voor MyWhoosh.
 
 De Zwift Cog heeft geen elektronica en heeft dit programma niet nodig: je koppelt je trainer (bijv. Zwift Hub) gewoon in MyWhoosh.
 
-## Wat heb je nodig
+### Wat heb je nodig
 - Windows 10 of 11 met Bluetooth
 - MyWhoosh
 - Een Zwift Click (of Play / Ride / Click v2)
 
-## Installatie
+### Installatie
 
 Kies één van de twee manieren.
 
-### A. Losse .exe (geen Python nodig)
+#### A. Losse .exe (geen Python nodig)
 1. Download `ZwiftClickMyWhoosh-vX.Y.Z.zip` van de [Releases-pagina](https://github.com/jeanbart82/ZwiftClickMyWhoosh/releases/latest).
 2. Klik met de rechtermuisknop op de zip → **Eigenschappen** → vink **Blokkering opheffen** aan → **OK**.
 3. Pak de zip uit. `ZwiftClickMyWhoosh.exe` en `config.json` moeten samen in één map blijven.
 4. Dubbelklik `ZwiftClickMyWhoosh.exe`.
 
-### B. Met Python (`start.bat`)
+#### B. Met Python (`start.bat`)
 1. Installeer Python 3 via [python.org](https://www.python.org/downloads/) of de Microsoft Store.
    Vink bij de installatie **"Add python.exe to PATH"** aan.
 2. Dubbelklik `start.bat`. De eerste keer wordt het onderdeel `bleak` gedownload, daarvoor is internet nodig.
 
 Je hebt bij beide manieren **geen beheerdersrechten** nodig.
 
-## Gebruik
+### Gebruik
 1. **Click vrijmaken**
    - Sluit de Zwift-app en Zwift Companion, ook op je telefoon. Anders blijft de Click daarmee verbonden.
    - Staat de Click in **Windows-instellingen → Bluetooth en apparaten**? Verwijder hem daar dan. Het programma maakt zelf verbinding.
@@ -44,7 +50,7 @@ Je hebt bij beide manieren **geen beheerdersrechten** nodig.
    - Druk je op + of −, dan zie je in het programmavenster bijvoorbeeld `plus -> toets 'i'`.
 5. **Stoppen**: druk op Ctrl+C in het programmavenster, of sluit het venster.
 
-## Instellen (`config.json`)
+### Instellen (`config.json`)
 - `buttons`: welke knop welke toets geeft. Standaard is `plus` = `i` (zwaarder) en `minus` = `k` (lichter).
   - Druk je op een knop die nog niet gekoppeld is, dan toont het programma de naam van die knop. Zet die naam in `buttons` met de gewenste toets.
   - Mogelijke toetsen: letters, cijfers, `space`, `enter`, `up`, `down`, `left`, `right`, `pageup`, `pagedown`, `f1`–`f12`, `minus`, `plus`, `comma`, `period`.
@@ -54,7 +60,7 @@ Je hebt bij beide manieren **geen beheerdersrechten** nodig.
 
 Herstart het programma na een wijziging in `config.json`.
 
-## Waarschuwingen van Windows
+### Waarschuwingen van Windows
 
 **"Windows heeft uw pc beveiligd" (SmartScreen)**
 De `.exe` is niet digitaal ondertekend. Windows kan daarom waarschuwen als je hem hebt gedownload, bijvoorbeeld van GitHub, of via e-mail of Teams hebt ontvangen.
@@ -70,7 +76,7 @@ Een zelfgebouwde `.exe` wordt soms ten onrechte als verdacht gemeld. Gebruik in 
 **Werklaptop**
 Op een laptop van je werk kan het IT-beleid scripts, Bluetooth-apparaten of onbekende programma's blokkeren. Gebruik het bij voorkeur op een privé-pc.
 
-## Problemen oplossen
+### Problemen oplossen
 | Probleem | Oplossing |
 |---|---|
 | "Geen controller gevonden" | Druk op een knop van de Click. Controleer stap 1 bij Gebruik: Zwift en Companion gesloten, Click niet gekoppeld in Windows. Staat Bluetooth aan? |
@@ -80,6 +86,98 @@ Op een laptop van je werk kan het IT-beleid scripts, Bluetooth-apparaten of onbe
 | Click v2 werkt niet | Een Click v2 moet soms eerst een keer met de Zwift-app verbonden zijn geweest. Sluit Zwift daarna weer af. |
 | Python niet gevonden (`start.bat`) | Installeer Python opnieuw en vink "Add python.exe to PATH" aan. Of gebruik de `.exe`. |
 
-## Zelf de .exe bouwen
+### Zelf de .exe bouwen
 Heb je de code aangepast? Dubbelklik dan `build_exe.bat`. Daarvoor is Python nodig.
 De nieuwe `ZwiftClickMyWhoosh.exe` verschijnt in dezelfde map.
+
+---
+
+## English
+
+Use your Zwift Click (also Zwift Play, Zwift Ride or Click v2) for virtual shifting in MyWhoosh on a Windows PC.
+The program connects to the Click over Bluetooth and turns every button press into a keystroke for MyWhoosh.
+
+The Zwift Cog has no electronics and doesn't need this program: just pair your trainer (e.g. Zwift Hub) in MyWhoosh as usual.
+
+> The program's own messages are in Dutch. The ones you'll see most:
+> `Zoeken naar Zwift-controllers` = searching for controllers, `Gevonden` = found, `verbonden` = connected,
+> `Geen controller gevonden` = no controller found, `toets` = key, `verbinding verbroken` = disconnected.
+
+### Requirements
+- Windows 10 or 11 with Bluetooth
+- MyWhoosh
+- A Zwift Click (or Play / Ride / Click v2)
+
+### Installation
+
+Pick one of the two options.
+
+#### A. Standalone .exe (no Python needed)
+1. Download `ZwiftClickMyWhoosh-vX.Y.Z.zip` from the [Releases page](https://github.com/jeanbart82/ZwiftClickMyWhoosh/releases/latest).
+2. Right-click the zip → **Properties** → tick **Unblock** → **OK**.
+3. Extract the zip. Keep `ZwiftClickMyWhoosh.exe` and `config.json` together in the same folder.
+4. Double-click `ZwiftClickMyWhoosh.exe`.
+
+#### B. With Python (`start.bat`)
+1. Install Python 3 from [python.org](https://www.python.org/downloads/) or the Microsoft Store.
+   During installation, tick **"Add python.exe to PATH"**.
+2. Double-click `start.bat`. The first run downloads the `bleak` package, so you need an internet connection.
+
+Neither option needs **administrator rights**.
+
+### Usage
+1. **Free up the Click**
+   - Close the Zwift app and Zwift Companion, including on your phone. Otherwise the Click stays connected to them.
+   - Is the Click listed under **Windows Settings → Bluetooth & devices**? Remove it there. The program connects to it by itself.
+2. **Set up MyWhoosh**
+   - Start MyWhoosh and pair your trainer.
+   - Turn on **virtual shifting**.
+   - Check the keyboard settings for the keys that shift harder and easier. If they aren't `I` and `K`, change them in `config.json` (see below).
+3. **Start the program**
+   - Run the `.exe` or `start.bat`.
+   - Press a button on the Click a few times to wake it up.
+   - Wait until you see **"handshake OK"**.
+4. **Ride**
+   - Click in the MyWhoosh window so it's active. Keystrokes always go to the active window.
+   - When you press + or −, the program window shows something like `plus -> toets 'i'`.
+5. **Stop**: press Ctrl+C in the program window, or close the window.
+
+### Configuration (`config.json`)
+- `buttons`: which button sends which key. By default `plus` = `i` (harder) and `minus` = `k` (easier).
+  - When you press a button that isn't mapped yet, the program shows its name. Add that name to `buttons` with the key you want.
+  - Available keys: letters, digits, `space`, `enter`, `up`, `down`, `left`, `right`, `pageup`, `pagedown`, `f1`–`f12`, `minus`, `plus`, `comma`, `period`.
+- `focus_window_title`: set this to e.g. `"MyWhoosh"` and the program brings the MyWhoosh window to the front before every keystroke.
+- `key_hold_ms`: how long a key stays pressed (default 40 ms). Increase it if MyWhoosh occasionally misses a shift.
+- `debug`: set to `true` to see the raw Bluetooth data. You can also use `start.bat --debug`.
+
+Restart the program after changing `config.json`.
+
+### Windows warnings
+
+**"Windows protected your PC" (SmartScreen)**
+The `.exe` isn't digitally signed. Windows may warn you if you downloaded it, for example from GitHub, or received it by e-mail or Teams.
+Choose **More info → Run anyway**.
+
+**Downloaded zip**
+If you download the project as a zip from GitHub, right-click the zip before extracting → **Properties** → tick **Unblock** → **OK**.
+Extract it only after that.
+
+**Antivirus**
+A self-built `.exe` is sometimes wrongly flagged as suspicious. In that case, use `start.bat` with Python.
+
+**Work laptop**
+On a work laptop, IT policy may block scripts, Bluetooth devices or unknown programs. Preferably use it on a personal PC.
+
+### Troubleshooting
+| Problem | Solution |
+|---|---|
+| "Geen controller gevonden" (no controller found) | Press a button on the Click. Check step 1 under Usage: Zwift and Companion closed, Click not paired in Windows. Is Bluetooth on? |
+| The window shows `plus -> toets 'i'`, but MyWhoosh doesn't respond | Click in the MyWhoosh window first, or set `focus_window_title` to `"MyWhoosh"`. Check that the keys match MyWhoosh's settings. |
+| MyWhoosh still doesn't respond | Is MyWhoosh running as administrator? Then Windows blocks the keystrokes. Start MyWhoosh normally, or run this program as administrator too. |
+| A button does something unexpected | Look at the button name the program shows and adjust `buttons` in `config.json`. |
+| Click v2 doesn't work | A Click v2 sometimes needs to have been connected to the Zwift app once first. Close Zwift again afterwards. |
+| Python not found (`start.bat`) | Reinstall Python and tick "Add python.exe to PATH". Or use the `.exe`. |
+
+### Building the .exe yourself
+Changed the code? Double-click `build_exe.bat`. This requires Python.
+The new `ZwiftClickMyWhoosh.exe` appears in the same folder.
