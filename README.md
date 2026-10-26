@@ -15,8 +15,10 @@ De Zwift Cog heeft geen elektronica en heeft dit programma niet nodig: je koppel
 Kies één van de twee manieren.
 
 ### A. Losse .exe (geen Python nodig)
-1. Zet `ZwiftClickMyWhoosh.exe` en `config.json` samen in één map.
-2. Dubbelklik `ZwiftClickMyWhoosh.exe`.
+1. Download `ZwiftClickMyWhoosh-vX.Y.Z.zip` van de [Releases-pagina](https://github.com/jeanbart82/ZwiftClickMyWhoosh/releases/latest).
+2. Klik met de rechtermuisknop op de zip → **Eigenschappen** → vink **Blokkering opheffen** aan → **OK**.
+3. Pak de zip uit. `ZwiftClickMyWhoosh.exe` en `config.json` moeten samen in één map blijven.
+4. Dubbelklik `ZwiftClickMyWhoosh.exe`.
 
 ### B. Met Python (`start.bat`)
 1. Installeer Python 3 via [python.org](https://www.python.org/downloads/) of de Microsoft Store.
