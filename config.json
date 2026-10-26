@@ -1,18 +1,33 @@
 {
   "language": "nl",
   "buttons": {
-    "plus": "i",
-    "minus": "k",
+    "plus": "k",
+    "minus": "i",
 
-    "right_paddle": "i",
-    "left_paddle": "k",
-    "right_shift": "",
-    "left_shift": "",
-
-    "shift_up_right": "i",
+    "shift_up_right": "k",
     "shift_down_right": "k",
+    "powerup_right": "k",
+    "paddle_right": "k",
+    "side_right": "k",
+
     "shift_up_left": "i",
-    "shift_down_left": "k"
+    "shift_down_left": "i",
+    "powerup_left": "i",
+    "paddle_left": "i",
+    "side_left": "i",
+
+    "left": {"key": "a", "hold": true},
+    "right": {"key": "d", "hold": true},
+    "up": "",
+    "down": "",
+
+    "onoff_left": "h",
+    "onoff_right": "h",
+
+    "a": "",
+    "b": "",
+    "y": "",
+    "z": ""
   },
   "key_hold_ms": 40,
   "focus_window_title": "",

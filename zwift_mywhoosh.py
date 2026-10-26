@@ -126,14 +126,22 @@ RIDE_BUTTONS = {
     0x20000: "onoff_right",
 }
 
-# Zwift Play: protobuf-veldnummer -> knopnaam (waarde 0 = ingedrukt)
-PLAY_FIELDS = {2: "y", 3: "z", 4: "a", 5: "b", 6: "shift", 7: "on"}
-PLAY_PADDLE_THRESHOLD = 50  # analoge paddle (-100..100)
+# Zwift Ride / Click v2: analoge peddels (veld 3), locatie 0 = links, 1 = rechts
+RIDE_PADDLES = {0: "paddle_left", 1: "paddle_right"}
+RIDE_PADDLE_THRESHOLD = 25
+
+# Zwift Play: protobuf-veldnummer -> knopnaam (waarde 0 = ingedrukt).
+# De linkerhelft heeft een richtingskruis, de rechterhelft Y/Z/A/B; namen gelijk aan de Ride.
+PLAY_FIELDS = {
+    "left": {2: "up", 3: "left", 4: "right", 5: "down", 6: "side_left", 7: "onoff_left"},
+    "right": {2: "y", 3: "z", 4: "a", 5: "b", 6: "side_right", 7: "onoff_right"},
+}
+PLAY_PADDLE_THRESHOLD = 100  # analoge peddel (-100..100): alleen helemaal ingeknepen telt
 
 
-def parse_protobuf(data: bytes) -> dict[int, int]:
-    """Minimale protobuf-decoder: geeft {veldnummer: waarde} voor varint-velden."""
-    fields: dict[int, int] = {}
+def protobuf_fields(data: bytes) -> list[tuple[int, int | bytes]]:
+    """Minimale protobuf-decoder: geeft (veldnummer, waarde) voor varint- en length-delimited velden."""
+    fields: list[tuple[int, int | bytes]] = []
     i = 0
 
     def varint() -> int:
@@ -152,9 +160,11 @@ def parse_protobuf(data: bytes) -> dict[int, int]:
         key = varint()
         field, wire = key >> 3, key & 0x07
         if wire == 0:
-            fields.setdefault(field, varint())
+            fields.append((field, varint()))
         elif wire == 2:
-            i += varint()
+            length = varint()
+            fields.append((field, data[i:i + length]))
+            i += length
         elif wire == 1:
             i += 8
         elif wire == 5:
@@ -162,6 +172,15 @@ def parse_protobuf(data: bytes) -> dict[int, int]:
         else:
             break
     return fields
+
+
+def parse_protobuf(data: bytes) -> dict[int, int]:
+    """Geeft {veldnummer: waarde} voor de varint-velden (eerste voorkomen)."""
+    result: dict[int, int] = {}
+    for field, value in protobuf_fields(data):
+        if isinstance(value, int):
+            result.setdefault(field, value)
+    return result
 
 
 def zigzag(n: int) -> int:
@@ -186,15 +205,22 @@ def decode_buttons(data: bytes) -> set[str] | None:
     if msg_type == MSG_PLAY:
         f = parse_protobuf(payload)
         side = "right" if f.get(1, 0) == 0 else "left"
-        pressed = {f"{side}_{name}" for num, name in PLAY_FIELDS.items() if f.get(num, 0) == 0}
+        pressed = {name for num, name in PLAY_FIELDS[side].items() if f.get(num, 0) == 0}
         if abs(zigzag(f.get(8, 0))) >= PLAY_PADDLE_THRESHOLD:
-            pressed.add(f"{side}_paddle")
+            pressed.add(f"paddle_{side}")
         return pressed
 
     if msg_type == MSG_RIDE:
         f = parse_protobuf(payload)
         button_map = f.get(1, 0xFFFFFFFF)
-        return {name for bit, name in RIDE_BUTTONS.items() if not button_map & bit}
+        pressed = {name for bit, name in RIDE_BUTTONS.items() if not button_map & bit}
+        for field, value in protobuf_fields(payload):
+            if field == 3 and isinstance(value, bytes):
+                paddle = parse_protobuf(value)
+                name = RIDE_PADDLES.get(paddle.get(1, 0))
+                if name and abs(zigzag(paddle.get(2, 0))) >= RIDE_PADDLE_THRESHOLD:
+                    pressed.add(name)
+        return pressed
 
     return None
 
@@ -293,19 +319,36 @@ class Bridge:
         self.debug = debug
         self.hold_ms = int(config.get("key_hold_ms", 40))
         self.focus_title = config.get("focus_window_title") or None
-        self.mapping = {btn: key_to_vk(key) for btn, key in config["buttons"].items() if key}
-        self.key_names = {btn: key for btn, key in config["buttons"].items() if key}
+        # Waarde is "k" (tik) of {"key": "a", "hold": true} (ingedrukt zolang de knop ingedrukt is)
+        self.mapping: dict[str, tuple[str, int, bool]] = {}
+        for button, value in config["buttons"].items():
+            key, hold = (value.get("key", ""), bool(value.get("hold"))) if isinstance(value, dict) else (value, False)
+            if key:
+                self.mapping[button] = (key, key_to_vk(key), hold)
 
     async def on_buttons(self, name: str, previous: set[str], pressed: set[str]) -> None:
+        for button in sorted(previous - pressed):
+            if button in self.mapping and self.mapping[button][2]:
+                _send_key(self.mapping[button][1], up=True)
+
         for button in sorted(pressed - previous):
-            vk = self.mapping.get(button)
-            if vk is None:
+            if button not in self.mapping:
                 print(t("unmapped", name=name, button=button))
                 continue
-            print(t("pressed", name=name, button=button, key=self.key_names[button]))
+            key, vk, hold = self.mapping[button]
+            print(t("pressed", name=name, button=button, key=key))
             if self.focus_title:
                 focus_window(self.focus_title)
-            await tap_key(vk, self.hold_ms)
+            if hold:
+                _send_key(vk, up=False)
+            else:
+                await tap_key(vk, self.hold_ms)
+
+    def release_all(self, pressed: set[str]) -> None:
+        """Laat vastgehouden toetsen los, bijv. als de verbinding wegvalt."""
+        for button in pressed:
+            if button in self.mapping and self.mapping[button][2]:
+                _send_key(self.mapping[button][1], up=True)
 
 
 def identify(device, adv) -> str | None:
@@ -370,12 +413,14 @@ async def run_controller(device, label: str, bridge: Bridge) -> None:
                 await client.start_notify(ASYNC_CHAR, on_async)
                 await client.start_notify(SYNC_TX_CHAR, on_sync_tx)
                 rx = client.services.get_characteristic(SYNC_RX_CHAR)
-                await client.write_gatt_char(rx, RIDE_ON, response="write" in rx.properties)
+                await client.write_gatt_char(rx, RIDE_ON, response="write-without-response" not in rx.properties)
 
                 await disconnected.wait()
                 print(t("disconnected", label=label))
         except Exception as e:  # noqa: BLE001 - BLE-fouten zijn divers, gewoon opnieuw proberen
             print(t("connect_error", label=label, error=e))
+        finally:
+            bridge.release_all(pressed)
 
         await asyncio.sleep(3)
         print(t("reconnecting", label=label))
