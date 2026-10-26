@@ -1,0 +1,20 @@
+{
+  "buttons": {
+    "plus": "i",
+    "minus": "k",
+
+    "right_paddle": "i",
+    "left_paddle": "k",
+    "right_shift": "",
+    "left_shift": "",
+
+    "shift_up_right": "i",
+    "shift_down_right": "k",
+    "shift_up_left": "i",
+    "shift_down_left": "k"
+  },
+  "key_hold_ms": 40,
+  "focus_window_title": "",
+  "scan_seconds": 8,
+  "debug": false
+}
