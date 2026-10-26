@@ -348,8 +348,14 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
+    sys.stdout.reconfigure(line_buffering=True)
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
         print("Gestopt.")
         time.sleep(0.2)
+    except Exception as e:  # noqa: BLE001
+        print(f"\nFout: {e}")
+        if getattr(sys, "frozen", False):  # .exe: venster openhouden zodat de fout leesbaar is
+            input("Druk op Enter om af te sluiten...")
+        raise
