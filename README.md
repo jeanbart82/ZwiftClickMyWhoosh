@@ -33,6 +33,9 @@ Kies één van de twee manieren.
 
 Je hebt bij beide manieren **geen beheerdersrechten** nodig.
 
+#### Updaten
+Download de nieuwe zip en vervang **zowel `ZwiftClickMyWhoosh.exe` als `config.json`**. Heb je zelf toetsen aangepast, zet die dan daarna opnieuw in de nieuwe `config.json`.
+
 ### Gebruik
 1. **Click vrijmaken**
    - Sluit de Zwift-app en Zwift Companion, ook op je telefoon. Anders blijft de Click daarmee verbonden.
@@ -44,7 +47,7 @@ Je hebt bij beide manieren **geen beheerdersrechten** nodig.
 3. **Programma starten**
    - Start de `.exe` of `start.bat`.
    - Druk een paar keer op een knop van de Click om hem wakker te maken.
-   - Wacht tot je **"handshake OK"** ziet.
+   - Wacht tot je **"handshake OK"** ziet. Bij een Click v2 (of Play / Ride) verbinden de linker- en rechterhelft apart; je ziet dan beide.
 4. **Rijden**
    - Klik in het MyWhoosh-venster zodat het actief is. De toetsen gaan altijd naar het actieve venster.
    - Druk je op + of −, dan zie je in het programmavenster bijvoorbeeld `plus -> toets 'k'`.
@@ -64,10 +67,23 @@ Je hebt bij beide manieren **geen beheerdersrechten** nodig.
   | `a` / `b` | `Enter` / `Escape` | Bevestigen / terug |
   | `y`, `z` | – | Niet gekoppeld |
 
+  `Enter` en `Escape` voor de menu's zijn nog niet getest in MyWhoosh. Werken ze niet, kijk dan in MyWhoosh welke toetsen het menu bedienen.
+
+  **Knopnamen per controller**
+
+  | Controller | Knop → naam |
+  |---|---|
+  | Zwift Click | + → `plus`, − → `minus` |
+  | Zwift Click v2, linkerhelft | ▲ → `up`, ▼ → `down`, ◀ → `left`, ▶ → `right`, − → `shift_up_left` |
+  | Zwift Click v2, rechterhelft | Y → `y`, Z → `z`, A → `a`, B → `b`, + → `shift_up_right` |
+  | Zwift Play | links: `up`, `down`, `left`, `right`, `side_left`, `onoff_left`, `paddle_left` · rechts: `y`, `z`, `a`, `b`, `side_right`, `onoff_right`, `paddle_right` |
+  | Zwift Ride | als de Play, plus `shift_up_left`, `shift_down_left`, `shift_up_right`, `shift_down_right`, `powerup_left`, `powerup_right` |
+
   - Een toets die ingedrukt blijft zolang je de knop vasthoudt, schrijf je zo: `"left": {"key": "a", "hold": true}`. Zonder `hold` wordt het één tik.
-  - MyWhoosh heeft ook emotes onder de toetsen `1` tot en met `7`. Je kunt ze aan een vrije knop koppelen, bijv. `"y": "1"`.
+  - MyWhoosh heeft ook emotes onder de toetsen `1` tot en met `7`. Je kunt ze aan een vrije knop koppelen, bijv. `"z": "7"`.
+  - De Click v2 heeft geen aan/uit-knop. Wil je de interface kunnen verbergen, koppel dan `H` aan een vrije knop: `"y": "h"`.
   - Druk je op een knop die nog niet gekoppeld is, dan toont het programma de naam van die knop. Zet die naam in `buttons` met de gewenste toets.
-  - Mogelijke toetsen: letters, cijfers, `space`, `enter`, `up`, `down`, `left`, `right`, `pageup`, `pagedown`, `f1`–`f12`, `minus`, `plus`, `comma`, `period`.
+  - Mogelijke toetsen: letters, cijfers, `space`, `enter`, `escape`, `tab`, `backspace`, `up`, `down`, `left`, `right`, `pageup`, `pagedown`, `home`, `end`, `insert`, `delete`, `f1`–`f12`, `minus`, `plus`, `comma`, `period`. Een lege waarde (`""`) betekent: niet gekoppeld.
 - `focus_window_title`: zet hier bijv. `"MyWhoosh"` in. Het programma haalt dan het MyWhoosh-venster naar voren voor elke toetsaanslag.
 - `key_hold_ms`: hoe lang een toets ingedrukt blijft (standaard 40 ms). Verhoog dit als MyWhoosh af en toe een schakeling mist.
 - `debug`: zet op `true` om de ruwe Bluetooth-data te zien. Je kunt ook `start.bat --debug` gebruiken.
@@ -97,6 +113,7 @@ Op een laptop van je werk kan het IT-beleid scripts, Bluetooth-apparaten of onbe
 | Wel `plus -> toets 'k'` in het venster, maar MyWhoosh reageert niet | Klik eerst in het MyWhoosh-venster, of zet `focus_window_title` op `"MyWhoosh"`. Controleer of de toetsen kloppen met de instellingen van MyWhoosh. |
 | MyWhoosh reageert nog steeds niet | Draait MyWhoosh als administrator? Dan blokkeert Windows de toetsaanslagen. Start MyWhoosh normaal, of start dit programma ook als administrator. |
 | Knop doet iets anders dan verwacht | Kijk welke knopnaam het programma toont en pas `buttons` in `config.json` aan. |
+| + en − schakelen niet op een Click v2 | Gebruik versie 1.2.1 of nieuwer, en vervang ook `config.json`. |
 | Click v2 werkt niet | Een Click v2 moet soms eerst een keer met de Zwift-app verbonden zijn geweest. Sluit Zwift daarna weer af. |
 | Zwift Ride werkt niet | Firmware nieuwer dan 1.2.0 is door Zwift afgeschermd en werkt niet met andere programma's. |
 | Python niet gevonden (`start.bat`) | Installeer Python opnieuw en vink "Add python.exe to PATH" aan. Of gebruik de `.exe`. |
@@ -138,6 +155,9 @@ Pick one of the two options.
 
 Neither option needs **administrator rights**.
 
+#### Updating
+Download the new zip and replace **both `ZwiftClickMyWhoosh.exe` and `config.json`**. If you changed any keys yourself, re-apply them in the new `config.json` afterwards.
+
 ### Usage
 1. **Free up the Click**
    - Close the Zwift app and Zwift Companion, including on your phone. Otherwise the Click stays connected to them.
@@ -149,7 +169,7 @@ Neither option needs **administrator rights**.
 3. **Start the program**
    - Run the `.exe` or `start.bat`.
    - Press a button on the Click a few times to wake it up.
-   - Wait until you see **"handshake OK"**.
+   - Wait until you see **"handshake OK"**. A Click v2 (or Play / Ride) connects its left and right halves separately, so you'll see it for both.
 4. **Ride**
    - Click in the MyWhoosh window so it's active. Keystrokes always go to the active window.
    - When you press + or −, the program window shows something like `plus -> key 'k'`.
@@ -169,10 +189,23 @@ Neither option needs **administrator rights**.
   | `a` / `b` | `Enter` / `Escape` | Confirm / back |
   | `y`, `z` | – | Not mapped |
 
+  `Enter` and `Escape` for the menus haven't been tested in MyWhoosh yet. If they don't work, check which keys MyWhoosh uses for its menus.
+
+  **Button names per controller**
+
+  | Controller | Button → name |
+  |---|---|
+  | Zwift Click | + → `plus`, − → `minus` |
+  | Zwift Click v2, left half | ▲ → `up`, ▼ → `down`, ◀ → `left`, ▶ → `right`, − → `shift_up_left` |
+  | Zwift Click v2, right half | Y → `y`, Z → `z`, A → `a`, B → `b`, + → `shift_up_right` |
+  | Zwift Play | left: `up`, `down`, `left`, `right`, `side_left`, `onoff_left`, `paddle_left` · right: `y`, `z`, `a`, `b`, `side_right`, `onoff_right`, `paddle_right` |
+  | Zwift Ride | same as the Play, plus `shift_up_left`, `shift_down_left`, `shift_up_right`, `shift_down_right`, `powerup_left`, `powerup_right` |
+
   - For a key that stays pressed while you hold the button, write: `"left": {"key": "a", "hold": true}`. Without `hold` it's a single tap.
-  - MyWhoosh also has emotes on keys `1` to `7`. You can map them to a free button, e.g. `"y": "1"`.
+  - MyWhoosh also has emotes on keys `1` to `7`. You can map them to a free button, e.g. `"z": "7"`.
+  - The Click v2 has no on/off button. To be able to hide the UI, map `H` to a free button: `"y": "h"`.
   - When you press a button that isn't mapped yet, the program shows its name. Add that name to `buttons` with the key you want.
-  - Available keys: letters, digits, `space`, `enter`, `up`, `down`, `left`, `right`, `pageup`, `pagedown`, `f1`–`f12`, `minus`, `plus`, `comma`, `period`.
+  - Available keys: letters, digits, `space`, `enter`, `escape`, `tab`, `backspace`, `up`, `down`, `left`, `right`, `pageup`, `pagedown`, `home`, `end`, `insert`, `delete`, `f1`–`f12`, `minus`, `plus`, `comma`, `period`. An empty value (`""`) means: not mapped.
 - `focus_window_title`: set this to e.g. `"MyWhoosh"` and the program brings the MyWhoosh window to the front before every keystroke.
 - `key_hold_ms`: how long a key stays pressed (default 40 ms). Increase it if MyWhoosh occasionally misses a shift.
 - `debug`: set to `true` to see the raw Bluetooth data. You can also use `start.bat --debug`.
@@ -202,6 +235,7 @@ On a work laptop, IT policy may block scripts, Bluetooth devices or unknown prog
 | The window shows `plus -> key 'k'`, but MyWhoosh doesn't respond | Click in the MyWhoosh window first, or set `focus_window_title` to `"MyWhoosh"`. Check that the keys match MyWhoosh's settings. |
 | MyWhoosh still doesn't respond | Is MyWhoosh running as administrator? Then Windows blocks the keystrokes. Start MyWhoosh normally, or run this program as administrator too. |
 | A button does something unexpected | Look at the button name the program shows and adjust `buttons` in `config.json`. |
+| + and − don't shift on a Click v2 | Use version 1.2.1 or newer, and replace `config.json` too. |
 | Click v2 doesn't work | A Click v2 sometimes needs to have been connected to the Zwift app once first. Close Zwift again afterwards. |
 | Zwift Ride doesn't work | Firmware newer than 1.2.0 is locked by Zwift and doesn't work with third-party programs. |
 | Python not found (`start.bat`) | Reinstall Python and tick "Add python.exe to PATH". Or use the `.exe`. |
